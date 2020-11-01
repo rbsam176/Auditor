@@ -1,0 +1,149 @@
+<html>
+    <title>Auditor</title>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+        <script type="text/javascript" src="http://jeromeetienne.github.io/jquery-qrcode/src/jquery.qrcode.js"></script>
+        <script type="text/javascript" src="http://jeromeetienne.github.io/jquery-qrcode/src/qrcode.js"></script>
+
+        <style>
+            .scan-input {
+                width: 85%; 
+                height:100px; 
+                text-align: center; 
+                font-size: 2em; 
+                padding: 1em; 
+                border: 2px solid rgb(17, 80, 175); 
+                border-radius: 10px;
+                margin: 10px 0px;
+            }
+
+            .green-flash {
+                animation: greenflash 1.5s;
+            }
+
+            .red-flash {
+                animation: redflash 1.5s;
+            }
+
+            @keyframes greenflash {
+                from {background-color: #19ff19;}
+                to {background-color: white;}
+
+            }
+
+            @keyframes redflash {
+                from {background-color: #ff1919;}
+                to {background-color: white;}
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-3">
+                </div>
+                <div class="col-6 text-center mt-4">
+                    <div class="h1">Auditor</div>
+                </div>
+                <div class="col-3">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                </div>
+                <div class="col-8 text-center my-2 py-4 bg-light">
+                    <div class="h3 p-4">Scanned Data:</div>
+                    <form id="inputArea">
+                        <div id="scanning-area">
+                            <input type="text" maxlength="10" class="scan-input" autofocus></input><br>
+                        </div>
+                    </form>
+                    <!-- <div class="row my-4">
+                        <div class="col-6">
+                            <input type="radio" value="Mac Audit"> Mac Audit
+                        </div>
+                        <div class="col-6">
+                            <input type="radio" value="Mac Audit"> Part Audit
+                        </div>
+                    </div> -->
+                    <button class="btn btn-primary" onclick="gatherData()">Generate QR Code</button>
+                    <div id="qrcodeCanvas" class="m-4"></div>
+                </div>
+                <div class="col-2">
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        // FORCES REPAIR NUMBER FORMATTING
+        // function forceFormatRepair(x){
+        //     x.value=x.value.replace(/^(R\d{0,9})?.*$/, '$1');
+        //     length(x);
+        // }
+
+        function forceFormatRepair(x){
+            const regex = /^(R\d{0,9})?$/;
+            if (x.value.match(regex)) {
+                // NOTHING
+            } else {
+                x.className = "scan-input red-flash"
+                setTimeout(function(){ x.classList.remove("red-flash"); }, 500);
+            }
+            x.value=x.value.replace(/^(R\d{0,9})?.*$/, '$1');
+            length(x);
+        }
+
+
+        
+
+
+
+
+        // CHECKS LENGTH OF INPUT, CREATES NEW INPUT FIELD AND CHANGES FOCUS
+        function length(x){
+            if (x.value.length == 10){
+                var input = document.createElement("input");
+                input.setAttribute('type', 'text');
+                input.setAttribute('maxLength', '10');
+                // input.className = "scan-input auto-tab";
+                input.className = "scan-input";
+                x.className = "scan-input green-flash"
+                var parent = document.getElementById("scanning-area");
+                parent.appendChild(input);
+                input.focus();
+                x.disabled = true;
+                lookout();
+            }
+        }
+
+        // ALWAYS LISTENING FOR INPUT DETECTION, CALLS ON ABOVE 2 FUNCTIONS
+        [...document.querySelectorAll('.scan-input')].forEach(function(item) {
+            item.addEventListener('input', function() {
+                forceFormatRepair(this);
+            });
+        });
+
+        // FUNCTION VERSION OF ABOVE WHICH IS CALLED FOR DYNAMICALLY CREATD INPUT FIELDS
+        function lookout(){
+            [...document.querySelectorAll('.scan-input')].forEach(function(item) {
+            item.addEventListener('input', function() {
+                forceFormatRepair(this);
+            });
+        });
+        }
+
+        // GATHERS ALL INPUT VALUES AND STORES THEM IN A QR CODE
+        function gatherData(){
+            var x = document.getElementById("inputArea");
+            var txt = "";
+            var i;
+            for (i = 0; i < x.length; i++) {
+                txt = txt + x.elements[i].value + "\n";
+            }
+            jQuery('#qrcodeCanvas').qrcode({
+		        text	: txt
+	        });	
+        }
+    </script>
+</html>
