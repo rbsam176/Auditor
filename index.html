@@ -44,6 +44,7 @@
                 <div class="col-3">
                 </div>
                 <div class="col-6 text-center mt-4">
+                    <img id="logo" src="robotlogo-off.png" style="height: 120px;"><br>
                     <div class="h1">Auditor</div>
                 </div>
                 <div class="col-3">
@@ -82,13 +83,27 @@
         //     length(x);
         // }
 
+        function logoRed() {
+            document.getElementById("logo").src="robotlogo-red.png";
+        }
+
+        function logoGreen() {
+            document.getElementById("logo").src="robotlogo-green.png";
+        }
+
+        function logoOff() {
+            document.getElementById("logo").src="robotlogo-off.png";
+        }
+
         function forceFormatRepair(x){
             const regex = /^(R\d{0,9})?$/;
             if (x.value.match(regex)) {
                 // NOTHING
             } else {
                 x.className = "scan-input red-flash"
-                setTimeout(function(){ x.classList.remove("red-flash"); }, 500);
+                logoRed();
+                setTimeout(function(){ x.classList.remove("red-flash");}, 500);
+                setTimeout(function(){ logoOff(); }, 500);
             }
             x.value=x.value.replace(/^(R\d{0,9})?.*$/, '$1');
             length(x);
@@ -113,6 +128,8 @@
                 parent.appendChild(input);
                 input.focus();
                 x.disabled = true;
+                logoGreen();
+                setTimeout(function(){ logoOff(); }, 500);
                 lookout();
             }
         }
